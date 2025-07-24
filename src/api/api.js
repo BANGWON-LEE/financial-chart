@@ -32,8 +32,6 @@ export function upBitSocketData(setUpbitData) {
 
       const candle = cache.get(secondTimestamp) || newData
 
-      console.log('팩트체크', !cache.get(secondTimestamp))
-
       if (!cache.has(secondTimestamp)) {
         // console.log('secondTimestamp', secondTimestamp)
         cache.set(secondTimestamp, newData)
@@ -44,8 +42,6 @@ export function upBitSocketData(setUpbitData) {
         // 소켓에 들어오는 데이터가 초 단위로 여러번 들어옴 따라서, 같은 초의 마지막 거래 가격을 갱신하기 위해
         // candle.c = newData.c로 할당해야 함
       }
-
-      console.log('cache go', cache)
 
       setUpbitData(prev => {
         return [...prev, candle]

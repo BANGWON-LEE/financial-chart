@@ -1,3 +1,5 @@
+import { Chart } from 'chart.js'
+
 export function getAllStorage() {
   if (typeof window === 'undefined') return
 
@@ -24,3 +26,19 @@ export function formatData(data) {
 
   return result
 }
+
+// export function moveWheelChartArea(chartInfo) {
+//   // const chart = new Chart()
+//   if (document.activeElement === chartInfo.canvas) {
+//     console.log('gkgkgk')
+//   }
+
+//   chartInfo.canvas.addEventListener('wheel', event => {
+//     event.preventDefault()
+//     if (event.deltaX !== 0) {
+//       console.log('3r3r3r')
+//       event.preventDefault()
+//       chartInfo.$zoom.pan({ x: event.deltaX, y: 0 }, undefined, 'default')
+//     }
+//   })
+// }

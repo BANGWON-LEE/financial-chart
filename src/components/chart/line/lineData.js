@@ -4,7 +4,7 @@ import { colorArr } from '../style/styleElement'
 
 export function setLineData(data, styleState, timePropertyName) {
   const labels = data[timePropertyName]
-  console.log('labels ', labels)
+  // console.log('labels ', labels)
 
   const dataTitle = Object.keys(data)
   const notLabelTitleArr = dataTitle.filter(

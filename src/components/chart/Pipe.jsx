@@ -76,9 +76,10 @@ import {
   setCandleStickData,
   setInitialCandleStickStyle,
   setInitialOptionCandleStick,
-  setOptionCandleStickData,
+  // setOptionCandleStickData,
 } from './candle_stick/candleStickData'
 import CandleStickMain from './candle_stick/CandleStickMain'
+// import { moveWheelChartArea } from './common/common'
 
 export default function Pipe(props) {
   const { type, data, width, height, uniqueChartName, timePropertyName } = props
@@ -158,11 +159,8 @@ export default function Pipe(props) {
     timePropertyName
   )
 
-  console.log('resultCandleStickData', resultCandleStickData)
-  // console.log('resultCandleStickData', resultCandleStickData)
-
   const resultCandleStickOptiopnData =
-    setOptionCandleStickData(chartOptionState)
+    setInitialCandleStickStyle(chartOptionState)
 
   // 차트의 옵션에 관한 설정을 담은 state
 
@@ -225,14 +223,6 @@ export default function Pipe(props) {
       case 'candlestick':
         return (
           <>
-            {/* <CandleStickMain
-              data={resultCandleStickData}
-              options={resultCandleStickOptiopnData}
-              width={width}
-              height={height}
-            /> */}
-            <div>23</div>
-            {/* {resultCandleStickData.datasets[0]?.data?.length > 0 && ( */}
             <CandleStickMain
               data={resultCandleStickData}
               options={resultCandleStickOptiopnData}
@@ -250,7 +240,7 @@ export default function Pipe(props) {
 
   return (
     <>
-      <button onClick={() => handleOpenStyleFilterModal()}>open</button>
+      {/* <button onClick={() => handleOpenStyleFilterModal()}>open</button> */}
       {chartUi()}
       {openCustomFilterModalState && (
         <StyleCustomFilter

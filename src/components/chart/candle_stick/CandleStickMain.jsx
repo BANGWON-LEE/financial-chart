@@ -1,7 +1,3 @@
-// import {  } from 'react-chartjs-2'
-// import zoomPlugin from 'chartjs-plugin-zoom'
-// import { initialMaxTicksLimit } from '../common/initialStyle'
-
 import { Chart } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns'
 
@@ -15,10 +11,11 @@ export default function CandleStickMain(props) {
         key={Date.now()}
         type="candlestick"
         data={data}
-        options={{
-          ...options,
-          maintainAspectRatio: false,
-        }}
+        // options={{
+        //   ...options,
+        //   maintainAspectRatio: false,
+        // }}
+        options={options}
         width={width}
         height={height}
       />

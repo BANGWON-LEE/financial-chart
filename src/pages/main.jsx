@@ -5,7 +5,6 @@ import { getUpbitPastData, upBitSocketData } from '../api/api'
 export default function Main() {
   async function loadUpbitPastData(setUpbitData) {
     const pastData = await getUpbitPastData()
-    console.log('확인', pastData)
 
     const pastUpbitDataObj = pastData.data.map(data => ({
       o: data.opening_price,
@@ -33,8 +32,8 @@ export default function Main() {
         // data={[...pastData, ...upbitData]}
         data={upbitData.slice(-190)}
         // data={upbitData}
-        width={1200}
-        height={600}
+        width={836}
+        height={342}
         uniqueChartName={'realTime'}
         timePropertyName={'x'}
       />
