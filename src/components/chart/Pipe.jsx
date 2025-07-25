@@ -71,7 +71,7 @@ import {
   setMixedStackBarData,
   setOptionMixedStackBarData,
 } from './mixed_stack_bar/mixedStackBarData'
-import MixedStackBarMain from './mixed_stack_bar/mixedStackBarMain'
+// import MixedStackBarMain from './mixed_stack_bar/mixedStackBarMain'
 import {
   setCandleStickData,
   setInitialCandleStickStyle,
