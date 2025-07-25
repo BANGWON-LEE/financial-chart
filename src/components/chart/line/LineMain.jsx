@@ -5,8 +5,6 @@ import { Chart } from 'react-chartjs-2'
 export default function LineMain(props) {
   const { data, options, width, height } = props
 
-  console.log('lineD', data)
-
   // const zoomOptions = {
   //   pan: {
   //     enabled: true,

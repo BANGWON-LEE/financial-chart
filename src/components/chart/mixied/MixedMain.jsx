@@ -6,7 +6,7 @@ export default function MixedMain(props) {
   return (
     <div>
       <div>
-        <Chart data={data} options={options} width={width} height={height} />
+        {/* <Chart data={data} options={options} width={width} height={height} /> */}
       </div>
     </div>
   )
