@@ -139,63 +139,63 @@ export function setInitialOptionCandleStick() {
 /**
  * 캔들스틱 옵션 재설정 (심플)
  */
-// export function setOptionCandleStickData() {
-//   const zoomOptions = {
-//     pan: {
-//       enabled: true,
-//       mode: 'x',
+export function setOptionCandleStickData() {
+  const zoomOptions = {
+    pan: {
+      enabled: true,
+      mode: 'x',
 
-//       onPan: ({ chart }) => {
-//         console.log('chart pan', chart)
-//       },
-//     },
-//     zoom: {
-//       wheel: { enabled: false },
-//       pinch: { enabled: false },
-//       mode: 'x',
-//     },
-//   }
+      onPan: ({ chart }) => {
+        console.log('chart pan', chart)
+      },
+    },
+    zoom: {
+      wheel: { enabled: false },
+      pinch: { enabled: false },
+      mode: 'x',
+    },
+  }
 
-//   const options = {
-//     responsive: true,
-//     plugins: {
-//       zoom: zoomOptions,
-//       legend: { position: 'bottom' },
-//       tooltip: {
-//         enabled: true,
-//         callbacks: {
-//           label: ctx => {
-//             const ohlc = ctx.raw
-//             return `O: ${ohlc.o} H: ${ohlc.h} L: ${ohlc.l} C: ${ohlc.c}`
-//           },
-//         },
-//       },
-//     },
-//     scales: {
-//       x: {
-//         type: 'time',
-//         time: {
-//           parser: 'yyyy-MM-dd HH:mm:ss', // date-fns 형식
-//           tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
-//           unit: 'second', // 초 단위까지
-//         },
-//         ticks: {
-//           autoSkip: true,
-//           maxTicksLimit: 20,
-//         },
-//         grid: {
-//           color: '#e0e3eb',
-//         },
-//       },
-//       y: {
-//         beginAtZero: false,
+  const options = {
+    responsive: true,
+    plugins: {
+      zoom: zoomOptions,
+      legend: { position: 'bottom' },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: ctx => {
+            const ohlc = ctx.raw
+            return `O: ${ohlc.o} H: ${ohlc.h} L: ${ohlc.l} C: ${ohlc.c}`
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          parser: 'yyyy-MM-dd HH:mm:ss', // date-fns 형식
+          tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
+          unit: 'second', // 초 단위까지
+        },
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 20,
+        },
+        grid: {
+          color: '#e0e3eb',
+        },
+      },
+      y: {
+        beginAtZero: false,
 
-//         grid: {
-//           color: '#e0e3eb',
-//         },
-//       },
-//     },
-//   }
+        grid: {
+          color: '#e0e3eb',
+        },
+      },
+    },
+  }
 
-//   return options
-// }
+  return options
+}

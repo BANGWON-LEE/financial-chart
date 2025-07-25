@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import AskChart from '../components/chart/AskChart'
 import { getUpbitPastData, upBitSocketData } from '../api/api'
+import { firebaseConfig } from '../api/firebase'
+import { initializeApp } from 'firebase/app'
+import { getMessaging, getToken } from 'firebase/messaging'
 
 export default function Main() {
   async function loadUpbitPastData(setUpbitData) {
@@ -18,13 +21,38 @@ export default function Main() {
     // return pastData
   }
   const [upbitData, setUpbitData] = useState([])
+  const app = initializeApp(firebaseConfig)
+
+  const message = getMessaging(app)
 
   useEffect(() => {
     loadUpbitPastData(setUpbitData).then(() => {
       upBitSocketData(setUpbitData)
     })
+
+    async function setupFCM() {
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.register(
+          '/firebase-messaging-sw.js'
+        )
+
+        const permission = await Notification.requestPermission()
+        if (permission === 'granted') {
+          const token = await getToken(message, {
+            vapidKey: import.meta.env.VITE_FIREBASE_VAPID_PUBLIC_KEY,
+            serviceWorkerRegistration: registration, // 🔥 핵심
+          })
+          console.log('✅ FCM 토큰:', token)
+        }
+      }
+    }
+
+    setupFCM()
   }, [])
 
+  // useEffect(() => {
+
+  // }, [])
   return (
     <div>
       <AskChart

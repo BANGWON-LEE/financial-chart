@@ -76,7 +76,7 @@ import {
   setCandleStickData,
   setInitialCandleStickStyle,
   setInitialOptionCandleStick,
-  // setOptionCandleStickData,
+  setOptionCandleStickData,
 } from './candle_stick/candleStickData'
 import CandleStickMain from './candle_stick/CandleStickMain'
 // import { moveWheelChartArea } from './common/common'
@@ -160,7 +160,7 @@ export default function Pipe(props) {
   )
 
   const resultCandleStickOptiopnData =
-    setInitialCandleStickStyle(chartOptionState)
+    setOptionCandleStickData(chartOptionState)
 
   // 차트의 옵션에 관한 설정을 담은 state
 
