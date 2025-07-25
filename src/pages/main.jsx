@@ -33,7 +33,10 @@ export default function Main() {
     async function setupFCM() {
       if ('serviceWorker' in navigator) {
         const registration = await navigator.serviceWorker.register(
-          'https://financial-chart-1ti4nk9as-bangwon-lees-projects.vercel.app/firebase-messaging-sw.js'
+          '/firebase-messaging-sw.js',
+          {
+            type: 'module',
+          }
         )
 
         const permission = await Notification.requestPermission()
