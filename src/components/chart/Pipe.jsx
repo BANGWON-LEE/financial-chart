@@ -211,15 +211,15 @@ export default function Pipe(props) {
             height={height}
           />
         )
-      case 'mixedStackBar':
-        return (
-          <MixedStackBarMain
-            data={resultMixedStackBarData}
-            options={resultMixedStackBarOptionData}
-            width={width}
-            height={height}
-          />
-        )
+      // case 'mixedStackBar':
+      //   return (
+      //     <MixedStackBarMain
+      //       data={resultMixedStackBarData}
+      //       options={resultMixedStackBarOptionData}
+      //       width={width}
+      //       height={height}
+      //     />
+      //   )
       case 'candlestick':
         return (
           <>
