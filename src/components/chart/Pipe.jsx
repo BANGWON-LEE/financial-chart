@@ -50,7 +50,7 @@ import {
   setMixedData,
   setOptionMixedData,
 } from './mixied/mixedData'
-import MixedMain from './mixied/mixedMain'
+// import MixedMain from './mixied/mixedMain'
 import BarMain from './bar/BarMain'
 import {
   setBarData,
@@ -184,15 +184,15 @@ export default function Pipe(props) {
           />
         )
 
-      case 'mixed':
-        return (
-          <MixedMain
-            data={resultMixedData}
-            options={resultMixedOptionData}
-            width={width}
-            height={height}
-          />
-        )
+      // case 'mixed':
+      //   return (
+      //     <MixedMain
+      //       data={resultMixedData}
+      //       options={resultMixedOptionData}
+      //       width={width}
+      //       height={height}
+      //     />
+      //   )
       case 'bar':
         return (
           <BarMain
