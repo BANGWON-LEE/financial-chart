@@ -1,6 +1,5 @@
-# Realtime Chart Dashboard (Upbit WebSocket → Candlestick)
-
-업비트 실시간 소켓(WebSocket) API로 체결/캔들 데이터를 받아 **Chart.js + chartjs-chart-financial**로 캔들스틱 차트를 시각화하는 프로젝트입니다.  
+# financial Chart 
+업비트 실시간 소켓(WebSocket)데이터를 받아 **Chart.js + chartjs-chart-financial**로 캔들스틱 타입 차트를 시각화하는 프로젝트입니다.  
 현재는 실시간 데이터 수신 및 시각화까지 완료했고, 앞으로 **마우스 드래그/이벤트 기반 구간 선택 시각화**를 확장할 예정입니다.
 
 > Stack: **JavaScript**, **React 19**, **Vite**, **Chart.js v4**, **chartjs-chart-financial**, **chartjs-plugin-zoom**, **date-fns**, **Socket.IO Client**, (옵션) **Firebase Cloud Messaging**
