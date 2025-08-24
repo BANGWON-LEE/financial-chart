@@ -8,9 +8,7 @@
 ---
 
 ## 데모 (예시)
-- 실시간 캔들 업데이트 GIF 자리  
-  `docs/demo.gif` (추후 추가)
-
+![Demo](./public/chart.gif)
 ---
 
 ## 주요 기능 (현재)
