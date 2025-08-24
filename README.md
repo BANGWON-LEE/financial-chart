@@ -50,3 +50,17 @@
 ---
 
 ## 프로젝트 구조 (요약)
+realtime-chart-dashboard/
+├─ public/
+│  └─ firebase-messaging-sw.js      # (옵션) FCM 백그라운드 알림
+├─ src/
+│  ├─ components/
+│  │  └─ CandleChart.jsx            # 캔들 차트 컴포넌트
+│  ├─ hooks/
+│  │  └─ useUpbitSocket.js          # 업비트 WS 연결/파서
+│  ├─ utils/
+│  │  └─ ohlc.ts                    # 체결→OHLC 변환 유틸 (예: 집계기)
+│  └─ main.jsx
+├─ .env.local                        # Vite 환경변수(개발용)
+├─ package.json
+└─ vite.config.ts
