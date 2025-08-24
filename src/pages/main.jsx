@@ -53,16 +53,11 @@ export default function Main() {
     setupFCM()
   }, [])
 
-  // useEffect(() => {
-
-  // }, [])
   return (
     <div>
       <AskChart
         type={'candlestick'}
-        // data={[...pastData, ...upbitData]}
         data={upbitData.slice(-190)}
-        // data={upbitData}
         width={836}
         height={342}
         uniqueChartName={'realTime'}
