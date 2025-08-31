@@ -59,6 +59,7 @@ export function setInitialCandleStickStyle(
 /**
  * 캔들스틱 차트 옵션 세팅
  */
+
 export function setInitialOptionCandleStick() {
   //   const optionUniqueChartName = uniqueChartName + 'Option'
   //   const styleArr = getStorage(optionUniqueChartName)
@@ -69,10 +70,14 @@ export function setInitialOptionCandleStick() {
     pan: {
       enabled: true,
       mode: 'x',
+      onPan: ({ chart }) => {
+        // console.log('chart pan', chart)
+      },
     },
     zoom: {
       wheel: { enabled: true },
       pinch: { enabled: true },
+
       mode: 'x',
     },
   }
@@ -96,6 +101,7 @@ export function setInitialOptionCandleStick() {
         },
       },
     },
+    animation: false,
     scales: {
       x: {
         // display: true,
@@ -103,7 +109,7 @@ export function setInitialOptionCandleStick() {
         time: {
           parser: 'yyyy-MM-dd HH:mm:ss', // date-fns 형식
           tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
-          unit: 'second', // 초 단위까지
+          unit: 'minute', // 초 단위까지
         },
         ticks: {
           autoSkip: false,
@@ -112,6 +118,8 @@ export function setInitialOptionCandleStick() {
         grid: {
           color: '#e0e3eb',
         },
+        suggestedMin: new Date() - 480000,
+        suggestedMax: new Date(),
       },
       y: {
         // display: true,
@@ -139,6 +147,8 @@ export function setInitialOptionCandleStick() {
 /**
  * 캔들스틱 옵션 재설정 (심플)
  */
+// export let chartEvent = new Event('ChartEvent')
+// export let myEvent
 export function setOptionCandleStickData() {
   const zoomOptions = {
     pan: {
@@ -146,12 +156,20 @@ export function setOptionCandleStickData() {
       mode: 'x',
 
       onPan: ({ chart }) => {
+        const myEvent = new CustomEvent('ChartEvent', {
+          detail: {
+            focusDetail: { min: chart.scales.x.min, max: chart.scales.x.max },
+            // toPast: true,
+          },
+        })
         console.log('chart pan', chart)
+        document.dispatchEvent(myEvent)
+        // console.log('이동 중...', chart.scales.x.min, chart.scales.x.max)
       },
     },
     zoom: {
-      wheel: { enabled: false },
-      pinch: { enabled: false },
+      wheel: { enabled: true },
+      pinch: { enabled: true },
       mode: 'x',
     },
   }
@@ -177,11 +195,12 @@ export function setOptionCandleStickData() {
         time: {
           parser: 'yyyy-MM-dd HH:mm:ss', // date-fns 형식
           tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
-          unit: 'second', // 초 단위까지
+          unit: 'minute', // 분 단위까지
         },
         ticks: {
           autoSkip: true,
-          maxTicksLimit: 20,
+          stepSize: 0.25,
+          maxTicksLimit: 13,
         },
         grid: {
           color: '#e0e3eb',

@@ -7,6 +7,8 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+mymap-myplan-firebase-adminsdk-fbsvc-d68ab89ece.json
+
 node_modules
 dist
 dist-ssr
