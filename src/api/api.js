@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { outerDataStore } from '../pages/main'
 import { outerChartRealSignal } from '../util/signal'
+import { xaxisStore } from '../util/xaxisState'
 
 export function upBitSocketData(setUpbitData, realSignal) {
   const socket = new WebSocket('wss://api.upbit.com/websocket/v1')
@@ -59,8 +60,12 @@ export function upBitSocketData(setUpbitData, realSignal) {
 }
 
 export function getUpbitPastData() {
-  const url =
-    'https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=600'
+  // const xValue = xaxisStore().getX()
+  // const xCheck = xValue < 0 ? xValue * -1 : xValue
+  // const range = 1000 + xCheck
+
+  // const url = `https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=${range}`
+  const url = `https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=200`
   return new Promise((resolve, reject) => {
     axios
       .get(url)
@@ -119,7 +124,7 @@ export function upBitSocketDataLoad(setUpbitData) {
 
       // if(signal.isOn('ChartEvent'))
 
-      console.log('signal@@@', signal.isOn('ChartEvent'))
+      // console.log('signal@@@', signal.isOn('ChartEvent'))
 
       if (signal.isOn('ChartEvent') === true) {
         setUpbitData(prev => {
