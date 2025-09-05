@@ -47,7 +47,15 @@ import CandleStickMain from './candle_stick/CandleStickMain'
 // import { moveWheelChartArea } from './common/common'
 
 export default function Pipe(props) {
-  const { type, data, width, height, uniqueChartName, timePropertyName } = props
+  const {
+    type,
+    data,
+    width,
+    height,
+    uniqueChartName,
+    timePropertyName,
+    chartRef,
+  } = props
 
   // console.log('pipe D', data)
 
@@ -108,6 +116,7 @@ export default function Pipe(props) {
               options={resultCandleStickOptiopnData}
               width={width}
               height={height}
+              chartRef={chartRef}
             />
             {/* )} */}
           </>
