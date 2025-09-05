@@ -1,9 +1,15 @@
 import Pipe from '../chart/Pipe'
 
 export default function AskChart(props) {
-  const { type, data, width, height, uniqueChartName, timePropertyName } = props
-
-  // console.log('ddd', data)
+  const {
+    type,
+    data,
+    width,
+    height,
+    uniqueChartName,
+    timePropertyName,
+    chartRef,
+  } = props
 
   return (
     <Pipe
@@ -13,6 +19,7 @@ export default function AskChart(props) {
       height={height}
       uniqueChartName={uniqueChartName}
       timePropertyName={timePropertyName}
+      chartRef={chartRef}
     />
   )
 }
