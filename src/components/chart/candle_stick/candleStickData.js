@@ -109,7 +109,7 @@ export function setInitialOptionCandleStick() {
         time: {
           parser: 'yyyy-MM-dd HH:mm:ss', // date-fns 형식
           tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
-          unit: 'minute', // 초 단위까지
+          unit: 'second', // 초 단위까지
         },
         ticks: {
           autoSkip: false,
@@ -118,8 +118,6 @@ export function setInitialOptionCandleStick() {
         grid: {
           color: '#e0e3eb',
         },
-        suggestedMin: new Date() - 480000,
-        suggestedMax: new Date(),
       },
       y: {
         // display: true,
@@ -150,6 +148,7 @@ export function setInitialOptionCandleStick() {
 // export let chartEvent = new Event('ChartEvent')
 // export let myEvent
 export function setOptionCandleStickData() {
+  // let rangeNum = 480
   const zoomOptions = {
     pan: {
       enabled: true,
@@ -162,7 +161,13 @@ export function setOptionCandleStickData() {
             // toPast: true,
           },
         })
-        console.log('chart pan', chart)
+        // rangeNum -= 1
+        // const chartRangeEvent = new CustomEvent('ChartRangeEvent', {
+        //   detail: {
+        //     range: rangeNum,
+        //   },
+        // })
+        // console.log('rangeNum', rangeNum)
         document.dispatchEvent(myEvent)
         // console.log('이동 중...', chart.scales.x.min, chart.scales.x.max)
       },
@@ -171,6 +176,17 @@ export function setOptionCandleStickData() {
       wheel: { enabled: true },
       pinch: { enabled: true },
       mode: 'x',
+      speed: 5,
+      threshold: 5,
+      onZoomStart: ({ chart }) => {
+        const myEvent = new CustomEvent('ChartEvent', {
+          detail: {
+            focusDetail: { min: chart.scales.x.min, max: chart.scales.x.max },
+            // toPast: true,
+          },
+        })
+        document.dispatchEvent(myEvent)
+      },
     },
   }
 
@@ -188,6 +204,7 @@ export function setOptionCandleStickData() {
           },
         },
       },
+      mode: 'xy',
     },
     scales: {
       x: {
@@ -199,12 +216,14 @@ export function setOptionCandleStickData() {
         },
         ticks: {
           autoSkip: true,
-          stepSize: 0.25,
+          stepSize: 0.85,
           maxTicksLimit: 13,
         },
         grid: {
           color: '#e0e3eb',
         },
+        // min: new Date() - 200000,
+        // max: new Date(),
       },
       y: {
         beginAtZero: false,
