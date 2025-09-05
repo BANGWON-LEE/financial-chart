@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import AskChart from '../components/chart/AskChart'
 import { getUpbitPastData, upBitSocketDataLoad } from '../api/api'
 import { firebaseConfig } from '../api/firebase'
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken } from 'firebase/messaging'
 import { outerChartRealSignal } from '../util/signal'
+import { xRangeEvent } from '../util/chartEventAction'
 
 export default function Main() {
   async function loadUpbitPastData(setUpbitData) {
@@ -25,11 +26,12 @@ export default function Main() {
   const app = initializeApp(firebaseConfig)
 
   const message = getMessaging(app)
+  const chartRef = useRef(null)
+  const [xState, setXState] = useState(-10)
 
-  // const setChartData = () =>
-  //   loadUpbitPastData(setUpbitData).then(() => {
-  //     upBitSocketData(setUpbitData)
-  //   })
+  useEffect(() => {
+    xRangeEvent(chartRef.current.canvas, setXState)
+  })
 
   useEffect(() => {
     const signal = outerChartRealSignal()
@@ -38,8 +40,6 @@ export default function Main() {
     })
 
     document.addEventListener('ChartEvent', () => {
-      console.log('status state111', signal.get('ChartEvent'))
-
       signal.update('ChartEvent', false)
       // }
     })
@@ -69,11 +69,13 @@ export default function Main() {
     <div>
       <AskChart
         type={'candlestick'}
-        data={upbitData.slice(-300)}
+        // data={upbitData.slice(-420)}
+        data={upbitData.slice(xState)}
         width={836}
         height={342}
         uniqueChartName={'realTime'}
         timePropertyName={'x'}
+        chartRef={chartRef}
       />
     </div>
   )
@@ -81,15 +83,12 @@ export default function Main() {
 
 export function outerDataStore() {
   const storeArr = []
-  // console.log('바보 데이터', storeArr)
 
   return {
     get: function () {
-      // console.log('get check', storeArr)
       return storeArr
     },
     set: function (chartData) {
-      // console.log('chartData', chartData)
       storeArr.push(chartData)
     },
   }
