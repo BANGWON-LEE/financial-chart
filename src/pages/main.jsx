@@ -35,7 +35,7 @@ export default function Main() {
   useEffect(() => {
     const signal = outerChartRealSignal()
     loadUpbitPastData(setUpbitData).then(() => {
-      // upBitSocketDataLoad(setUpbitData)
+      upBitSocketDataLoad(setUpbitData)
     })
 
     document.addEventListener('ChartEvent', () => {

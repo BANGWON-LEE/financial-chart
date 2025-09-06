@@ -10,11 +10,11 @@ export function xaxisStore() {
       }
     },
     getX: function () {
-      console.log('xxxV', xValue)
+      // console.log('xxxV', xValue)
       return xValue
     },
     getXRange: function () {
-      console.log('vvvrange', xValue)
+      // console.log('vvvrange', xValue)
       return xValue
     },
   }
