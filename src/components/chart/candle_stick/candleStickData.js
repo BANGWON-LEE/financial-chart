@@ -3,6 +3,8 @@
 // import { initialMaxTicksLimit } from '../common/initialStyle'
 // import { colorArr } from '../style/styleElement'
 
+import { xaxisStore } from '../../../util/xaxisState'
+
 /**
  * 데이터 세팅: candlestick 전용
  */
@@ -145,8 +147,8 @@ export function setInitialOptionCandleStick() {
 /**
  * 캔들스틱 옵션 재설정 (심플)
  */
-// export let chartEvent = new Event('ChartEvent')
-// export let myEvent
+
+const xaxis = xaxisStore()
 export function setOptionCandleStickData() {
   // let rangeNum = 480
   const zoomOptions = {
@@ -158,16 +160,9 @@ export function setOptionCandleStickData() {
         const myEvent = new CustomEvent('ChartEvent', {
           detail: {
             focusDetail: { min: chart.scales.x.min, max: chart.scales.x.max },
-            // toPast: true,
           },
         })
-        // rangeNum -= 1
-        // const chartRangeEvent = new CustomEvent('ChartRangeEvent', {
-        //   detail: {
-        //     range: rangeNum,
-        //   },
-        // })
-        // console.log('rangeNum', rangeNum)
+
         document.dispatchEvent(myEvent)
         // console.log('이동 중...', chart.scales.x.min, chart.scales.x.max)
       },
@@ -179,6 +174,8 @@ export function setOptionCandleStickData() {
       speed: 5,
       threshold: 5,
       onZoomStart: ({ chart }) => {
+        // console.log('zoomChar', chart)
+        if (xaxis.getX() >= -30) return false
         const myEvent = new CustomEvent('ChartEvent', {
           detail: {
             focusDetail: { min: chart.scales.x.min, max: chart.scales.x.max },
@@ -191,7 +188,7 @@ export function setOptionCandleStickData() {
   }
 
   const options = {
-    responsive: true,
+    responsive: false,
     plugins: {
       zoom: zoomOptions,
       legend: { position: 'bottom' },
@@ -204,7 +201,7 @@ export function setOptionCandleStickData() {
           },
         },
       },
-      mode: 'xy',
+      mode: 'x',
     },
     scales: {
       x: {
@@ -212,7 +209,7 @@ export function setOptionCandleStickData() {
         time: {
           parser: 'yyyy-MM-dd HH:mm:ss', // date-fns 형식
           tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
-          unit: 'minute', // 분 단위까지
+          unit: 'second', // 분 단위까지
         },
         ticks: {
           autoSkip: true,
@@ -227,7 +224,11 @@ export function setOptionCandleStickData() {
       },
       y: {
         beginAtZero: false,
-
+        // min: 155200000,
+        // max: 155480000,
+        ticks: {
+          stepSize: 40000,
+        },
         grid: {
           color: '#e0e3eb',
         },

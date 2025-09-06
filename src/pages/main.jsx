@@ -13,21 +13,20 @@ export default function Main() {
 
     const pastUpbitDataObj = pastData.data.map(data => ({
       o: data.opening_price,
-      x: new Date(data.timestamp).getTime(),
+      x: new Date(data.candle_date_time_kst).getTime(),
       h: data.high_price,
       l: data.low_price,
       c: data.trade_price,
     }))
 
     setUpbitData(pastUpbitDataObj.reverse())
-    // return pastData
   }
   const [upbitData, setUpbitData] = useState([])
   const app = initializeApp(firebaseConfig)
 
   const message = getMessaging(app)
   const chartRef = useRef(null)
-  const [xState, setXState] = useState(-10)
+  const [xState, setXState] = useState(-30)
 
   useEffect(() => {
     xRangeEvent(chartRef.current.canvas, setXState)
@@ -36,7 +35,7 @@ export default function Main() {
   useEffect(() => {
     const signal = outerChartRealSignal()
     loadUpbitPastData(setUpbitData).then(() => {
-      upBitSocketDataLoad(setUpbitData)
+      // upBitSocketDataLoad(setUpbitData)
     })
 
     document.addEventListener('ChartEvent', () => {
@@ -64,15 +63,25 @@ export default function Main() {
     // }
     // setupFCM()
   }, [])
+  console.log('###', xState)
+
+  function updateXaxisRange(xState) {
+    const zeroRagne =
+      (xState >= 0 && xState < 1) || (xState <= 0 && xState > -1) || xState >= 0
+    return zeroRagne ? -30 : xState
+  }
+
+  console.log('xxxRAng', updateXaxisRange(xState))
 
   return (
     <div>
       <AskChart
         type={'candlestick'}
         // data={upbitData.slice(-420)}
-        data={upbitData.slice(xState)}
+        data={upbitData.slice(updateXaxisRange(xState))}
         width={836}
         height={342}
+        // height={342}
         uniqueChartName={'realTime'}
         timePropertyName={'x'}
         chartRef={chartRef}
