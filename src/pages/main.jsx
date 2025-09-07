@@ -27,13 +27,13 @@ export default function Main() {
   const message = getMessaging(app)
   const chartRef = useRef(null)
   const [xState, setXState] = useState(-30)
-
   useEffect(() => {
     xRangeEvent(chartRef.current.canvas, setXState)
   })
 
   useEffect(() => {
     const signal = outerChartRealSignal()
+
     loadUpbitPastData(setUpbitData).then(() => {
       upBitSocketDataLoad(setUpbitData)
     })
@@ -63,15 +63,12 @@ export default function Main() {
     // }
     // setupFCM()
   }, [])
-  console.log('###', xState)
 
   function updateXaxisRange(xState) {
     const zeroRagne =
       (xState >= 0 && xState < 1) || (xState <= 0 && xState > -1) || xState >= 0
     return zeroRagne ? -30 : xState
   }
-
-  console.log('xxxRAng', updateXaxisRange(xState))
 
   return (
     <div>
