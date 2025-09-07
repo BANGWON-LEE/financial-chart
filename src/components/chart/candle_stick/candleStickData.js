@@ -1,8 +1,3 @@
-// import { formatTimestamp } from '../../../util/date'
-// import { getStorage } from '../common/common'
-// import { initialMaxTicksLimit } from '../common/initialStyle'
-// import { colorArr } from '../style/styleElement'
-
 import { xaxisStore } from '../../../util/xaxisState'
 
 /**
@@ -130,15 +125,6 @@ export function setInitialOptionCandleStick() {
         },
       },
     },
-    // elements: {
-    //   candlestick: {
-    //     upColor: '#00FF00',
-    //     downColor: '#FF0000',
-    //     unchangedColor: '#999999',
-    //     borderColor: 'black',
-    //     borderWidth: 2,
-    //   },
-    // },
   }
 
   return options
