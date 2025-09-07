@@ -7,7 +7,7 @@
 ---
 
 ## 데모 (예시)
-![Demo](./public/chart.gif)
+![Demo](./public/chart09.gif)
 --- 
 설명 : 터치 패드 휠로, 범위 이동 작업 내용까지 표현
 
