@@ -60,10 +60,6 @@ export function upBitSocketData(setUpbitData, realSignal) {
 }
 
 export function getUpbitPastData() {
-  // const xValue = xaxisStore().getX()
-  // const xCheck = xValue < 0 ? xValue * -1 : xValue
-  // const range = 1000 + xCheck
-
   // const url = `https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=${range}`
   const url = `https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=200`
   return new Promise((resolve, reject) => {
@@ -121,10 +117,6 @@ export function upBitSocketDataLoad(setUpbitData) {
 
       const signal = outerChartRealSignal()
       const store = outerDataStore()
-
-      // if(signal.isOn('ChartEvent'))
-
-      // console.log('signal@@@', signal.isOn('ChartEvent'))
 
       if (signal.isOn('ChartEvent') === true) {
         setUpbitData(prev => {
