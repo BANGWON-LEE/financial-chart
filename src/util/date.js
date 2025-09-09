@@ -11,3 +11,10 @@ export function formatTimestamp(ms) {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
+
+export function formatRequestDate(focusDate) {
+  return focusDate.toISOString()
+}
+export function formatMSDate(date) {
+  return new Date(date).getTime()
+}
