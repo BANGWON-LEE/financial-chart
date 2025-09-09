@@ -43,6 +43,7 @@ export default function Main() {
     // console.log('ttyy', focusDate, formatTimestamp(new Date(dataFirstDate())))
 
     document.addEventListener('ChartEvent', e => {
+      signal.update('ChartEvent', false)
       const msFocusDate = dataFirstDate()
       let firstDate = e.detail.focusDate.start
       if (
@@ -53,9 +54,9 @@ export default function Main() {
       }
 
       const timeTerm = msFocusDate - firstDate > -1757413885000
-      if (timeTerm)
+      if (timeTerm) {
         compareDateRange(formatRequestDate(new Date(dataFirstDate())))
-      signal.update('ChartEvent', false)
+      }
     })
   })
 
@@ -115,10 +116,16 @@ export default function Main() {
     // setupFCM()
   }, [])
 
-  function updateXaxisRange(xState) {
+  function updateXaxisEnd(xState) {
     const zeroRagne =
       (xState >= 0 && xState < 1) || (xState <= 0 && xState > -1) || xState >= 0
     return zeroRagne ? -30 : xState
+  }
+
+  function updateXaxisStart(xState) {
+    const staticNum = xState >= -1 ? -1 : xState
+    console.log('fefefe222', staticNum, xState)
+    return staticNum
   }
 
   return (
@@ -126,7 +133,10 @@ export default function Main() {
       <AskChart
         type={'candlestick'}
         // data={upbitData.slice(-420)}
-        data={upbitData.slice(updateXaxisRange(xState))}
+        data={upbitData.slice(
+          updateXaxisEnd(xState),
+          updateXaxisStart(xState + 29)
+        )}
         width={836}
         height={342}
         // height={342}
