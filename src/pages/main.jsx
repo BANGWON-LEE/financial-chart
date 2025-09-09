@@ -6,13 +6,15 @@ import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken } from 'firebase/messaging'
 import { outerChartRealSignal } from '../util/signal'
 import { xRangeEvent } from '../util/chartEventAction'
+import { formatMSDate, formatRequestDate, formatTimestamp } from '../util/date'
 
 export default function Main() {
-  async function loadUpbitPastData(setUpbitData) {
-    const pastData = await getUpbitPastData()
+  async function loadUpbitPastData(setUpbitData, focusDate) {
+    const pastData = await getUpbitPastData(focusDate)
 
     const pastUpbitDataObj = pastData.data.map(data => ({
       o: data.opening_price,
+      // x: new Date(data.candle_date_time_kst).getTime(),
       x: new Date(data.candle_date_time_kst).getTime(),
       h: data.high_price,
       l: data.low_price,
@@ -27,20 +29,69 @@ export default function Main() {
   const message = getMessaging(app)
   const chartRef = useRef(null)
   const [xState, setXState] = useState(-30)
+  const signal = outerChartRealSignal()
+  const [focusDate, setFocusDate] = useState(
+    signal.get('chartCurrentFocusDate')
+    // formatRequestDate(new Date())
+  )
   useEffect(() => {
     xRangeEvent(chartRef.current.canvas, setXState)
   })
 
   useEffect(() => {
-    const signal = outerChartRealSignal()
+    // if (dataFirstDate() === undefined || dataFirstDate === false) return
+    // console.log('ttyy', focusDate, formatTimestamp(new Date(dataFirstDate())))
 
-    loadUpbitPastData(setUpbitData).then(() => {
-      upBitSocketDataLoad(setUpbitData)
-    })
+    document.addEventListener('ChartEvent', e => {
+      const msFocusDate = dataFirstDate()
+      let firstDate = e.detail.focusDate.start
+      if (
+        formatTimestamp(firstDate) !==
+        formatTimestamp(new Date(dataFirstDate()))
+      ) {
+        return
+      }
 
-    document.addEventListener('ChartEvent', () => {
+      const timeTerm = msFocusDate - firstDate > -1757413885000
+      if (timeTerm)
+        compareDateRange(formatRequestDate(new Date(dataFirstDate())))
       signal.update('ChartEvent', false)
-      // }
+    })
+  })
+
+  async function loadUpbitMorePastData(focusDate) {
+    const pastData = await getUpbitPastData(focusDate)
+
+    const pastUpbitDataObj = pastData.data.map(data => ({
+      o: data.opening_price,
+      x: new Date(data.candle_date_time_kst).getTime(),
+      // x: data.candle_date_time_kst,
+      h: data.high_price,
+      l: data.low_price,
+      c: data.trade_price,
+    }))
+
+    const result = pastUpbitDataObj.reverse()
+
+    setUpbitData(prev => [...result, ...prev])
+  }
+
+  const dataFirstDate = () => upbitData[0]?.x !== undefined && upbitData[0]?.x
+  // console.log('xState', new Date(), dataFirstDate())
+
+  useEffect(() => {
+    if (focusDate !== signal.get('chartCurrentFocusDate')) {
+      loadUpbitMorePastData(focusDate)
+    }
+  }, [focusDate])
+
+  function compareDateRange(firstDate) {
+    setFocusDate(firstDate)
+  }
+
+  useEffect(() => {
+    loadUpbitPastData(setUpbitData, focusDate).then(() => {
+      upBitSocketDataLoad(setUpbitData)
     })
 
     // async function setupFCM() {
@@ -69,6 +120,8 @@ export default function Main() {
       (xState >= 0 && xState < 1) || (xState <= 0 && xState > -1) || xState >= 0
     return zeroRagne ? -30 : xState
   }
+
+  console.log('보자보자', upbitData)
 
   return (
     <div>
