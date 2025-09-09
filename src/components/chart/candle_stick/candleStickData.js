@@ -164,7 +164,8 @@ export function setOptionCandleStickData() {
         if (xaxis.getX() >= -30) return false
         const myEvent = new CustomEvent('ChartEvent', {
           detail: {
-            focusDetail: { min: chart.scales.x.min, max: chart.scales.x.max },
+            // focusDetail: { min: chart.scales.x.min, max: chart.scales.x.max },
+            focusDate: { start: chart.scales.x.min },
             // toPast: true,
           },
         })
@@ -201,6 +202,14 @@ export function setOptionCandleStickData() {
           autoSkip: true,
           stepSize: 0.85,
           maxTicksLimit: 13,
+          callback: val => {
+            // console.log('tick raw value:', val, typeof val)
+            return new Date(val).toLocaleTimeString('ko-KR', {
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+            })
+          },
         },
         grid: {
           color: '#e0e3eb',
