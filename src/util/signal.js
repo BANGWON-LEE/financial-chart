@@ -1,5 +1,8 @@
+import { formatRequestDate, formatTimestamp } from './date'
+
 const signalMap = new Map()
 signalMap.set('ChartEvent', true)
+signalMap.set('chartCurrentFocusDate', formatRequestDate(new Date()))
 
 export function outerChartRealSignal() {
   return {
