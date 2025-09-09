@@ -1,4 +1,4 @@
-import { formatRequestDate, formatTimestamp } from './date'
+import { formatRequestDate } from './date'
 
 const signalMap = new Map()
 signalMap.set('ChartEvent', true)

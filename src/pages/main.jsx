@@ -121,8 +121,6 @@ export default function Main() {
     return zeroRagne ? -30 : xState
   }
 
-  console.log('보자보자', upbitData)
-
   return (
     <div>
       <AskChart
