@@ -59,9 +59,10 @@ export function upBitSocketData(setUpbitData, realSignal) {
   }
 }
 
-export function getUpbitPastData() {
+export function getUpbitPastData(focusDate) {
   // const url = `https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=${range}`
-  const url = `https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=200`
+  const url = `https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=200&to=${focusDate}`
+
   return new Promise((resolve, reject) => {
     axios
       .get(url)
