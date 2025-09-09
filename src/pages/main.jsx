@@ -124,7 +124,6 @@ export default function Main() {
 
   function updateXaxisStart(xState) {
     const staticNum = xState >= -1 ? -1 : xState
-    console.log('fefefe222', staticNum, xState)
     return staticNum
   }
 
