@@ -146,16 +146,3 @@ export default function Main() {
     </div>
   )
 }
-
-export function outerDataStore() {
-  const storeArr = []
-
-  return {
-    get: function () {
-      return storeArr
-    },
-    set: function (chartData) {
-      storeArr.push(chartData)
-    },
-  }
-}
