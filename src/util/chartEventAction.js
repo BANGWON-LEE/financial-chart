@@ -23,3 +23,25 @@ export const xRangeEvent = (chartRef, setXState) => {
     }
   })
 }
+
+export function outerDataStore() {
+  let storeArr = []
+
+  return {
+    get: function () {
+      return storeArr
+    },
+    set: function (chartData) {
+      console.log('store Check', chartData)
+      storeArr.push(chartData)
+      console.log('store get check', storeArr)
+    },
+    reset: function () {
+      // 배열 초기화를 위한 메서드
+      // alert('reset Do it')
+      storeArr = []
+      return
+      // console.log('mine',)
+    },
+  }
+}
