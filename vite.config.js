@@ -6,9 +6,23 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    headers: {
-      'Service-Worker-Allowed': '/',
-    },
+    headers: [
+      {
+        'Service-Worker-Allowed': '/',
+      },
+      {
+        key: 'Content-Security-Policy',
+        value: [
+          "default-src 'self'",
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+          "style-src 'self' 'unsafe-inline'",
+          "img-src 'self' data: https:",
+          // ↓↓ 핵심: 외부 WS 허용
+          "connect-src 'self' https://api.upbit.com wss://api.upbit.com",
+          "font-src 'self' data:",
+        ].join('; '),
+      },
+    ],
   },
   // define: {
   //   'import.meta.env': {
