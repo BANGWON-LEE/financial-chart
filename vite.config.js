@@ -6,22 +6,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    source: '/(.*)',
-    headers: [
-      {
-        'Service-Worker-Allowed': '/',
-      },
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'Content-Security-Policy',
-            value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.upbit.com wss://api.upbit.com; font-src 'self' data:",
-          },
-        ],
-      },
-    ],
+    headers: {
+      'Service-Worker-Allowed': '/',
+    },
   },
   // define: {
   //   'import.meta.env': {
