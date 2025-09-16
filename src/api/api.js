@@ -96,6 +96,7 @@ function checkDuplicationTime(cache, secondTimestamp, newData) {
 export function upBitSocketDataLoad(setUpbitData) {
   const socket = new WebSocket('wss://api.upbit.com/websocket/v1')
 
+  socket.binaryType = 'arraybuffer'
   socket.onopen = () => {
     const requestField = [
       { ticket: 'test' },
@@ -108,8 +109,6 @@ export function upBitSocketDataLoad(setUpbitData) {
   }
 
   const cache = new Map()
-
-  socket.binaryType = 'arraybuffer'
 
   socket.onmessage = event => {
     const textData = new TextDecoder('utf-8').decode(event.data)
