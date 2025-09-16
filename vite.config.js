@@ -19,7 +19,7 @@ export default defineConfig({
           "style-src 'self' 'unsafe-inline'",
           "img-src 'self' data: https:",
           // ↓↓ 핵심: 외부 WS 허용
-          "connect-src 'self' https://api.upbit.com/v1/market/all wss://api.upbit.com/websocket/v1'",
+          "connect-src 'self' https://api.upbit.com wss://api.upbit.com",
           "font-src 'self' data:",
         ].join('; '),
       },
