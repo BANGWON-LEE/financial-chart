@@ -12,16 +12,14 @@ export default defineConfig({
         'Service-Worker-Allowed': '/',
       },
       {
-        key: 'Content-Security-Policy',
-        value: [
-          "default-src 'self'",
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-          "style-src 'self' 'unsafe-inline'",
-          "img-src 'self' data: https:",
-          // ↓↓ 핵심: 외부 WS 허용
-          "connect-src 'self' https://api.upbit.com wss://api.upbit.com",
-          "font-src 'self' data:",
-        ].join('; '),
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value:
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.upbit.com wss://api.upbit.com; font-src 'self' data:",
+          },
+        ],
       },
     ],
   },
