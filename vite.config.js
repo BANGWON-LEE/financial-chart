@@ -6,6 +6,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
+    source: '/(.*)',
     headers: [
       {
         'Service-Worker-Allowed': '/',
@@ -18,7 +19,7 @@ export default defineConfig({
           "style-src 'self' 'unsafe-inline'",
           "img-src 'self' data: https:",
           // ↓↓ 핵심: 외부 WS 허용
-          "connect-src 'self' https://api.upbit.com wss://api.upbit.com",
+          "connect-src 'self' https://api.upbit.com/v1/market/all wss://api.upbit.com/websocket/v1'",
           "font-src 'self' data:",
         ].join('; '),
       },
