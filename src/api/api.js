@@ -96,6 +96,8 @@ function checkDuplicationTime(cache, secondTimestamp, newData) {
 export function upBitSocketDataLoad(setUpbitData) {
   const socket = new WebSocket('wss://api.upbit.com/websocket/v1')
 
+  socket.binaryType = 'arraybuffer'
+
   socket.onopen = () => {
     const requestField = [
       { ticket: 'test' },
@@ -110,35 +112,38 @@ export function upBitSocketDataLoad(setUpbitData) {
   const cache = new Map()
 
   socket.onmessage = event => {
-    const reader = new FileReader()
-    reader.readAsText(event.data)
-    reader.onload = () => {
-      const data = JSON.parse(reader.result)
-      const secondTimestamp = Math.floor(data.timestamp / 1000)
-      const newData = {
-        o: data.trade_price,
-        x: secondTimestamp * 1000,
-        h: data.trade_price,
-        l: data.trade_price,
-        c: data.trade_price,
-      }
+    const textData = new TextDecoder('utf-8').decode(event.data)
 
-      const result = checkDuplicationTime(cache, secondTimestamp, newData)
-
-      const signal = outerChartRealSignal()
-
-      if (signal.isOn('ChartEvent') === true) {
-        // console.log('pastUpbitData', pastUpbitData())
-
-        setUpbitData(prev => {
-          return [...prev, ...store.get(), result]
-        })
-        if (store.get().length > 0) {
-          store.reset()
-        }
-      } else if (signal.isOn('ChartEvent') === false) {
-        store.set(result)
-      }
+    // const reader = new FileReader()
+    // reader.readAsText(event.data)
+    // reader.onload = () => {
+    // const data = JSON.parse(reader.result)
+    const data = JSON.parse(textData)
+    const secondTimestamp = Math.floor(data.timestamp / 1000)
+    const newData = {
+      o: data.trade_price,
+      x: secondTimestamp * 1000,
+      h: data.trade_price,
+      l: data.trade_price,
+      c: data.trade_price,
     }
+
+    const result = checkDuplicationTime(cache, secondTimestamp, newData)
+
+    const signal = outerChartRealSignal()
+
+    if (signal.isOn('ChartEvent') === true) {
+      // console.log('pastUpbitData', pastUpbitData())
+
+      setUpbitData(prev => {
+        return [...prev, ...store.get(), result]
+      })
+      if (store.get().length > 0) {
+        store.reset()
+      }
+    } else if (signal.isOn('ChartEvent') === false) {
+      store.set(result)
+    }
+    // }
   }
 }
