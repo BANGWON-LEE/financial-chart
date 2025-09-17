@@ -93,7 +93,7 @@ function checkDuplicationTime(cache, secondTimestamp, newData) {
   return cache.get(secondTimestamp) || candle
 }
 
-export function upBitSocketDataLoad(setUpbitData) {
+export function upBitSocketDataLoad(upbitData, setUpbitData) {
   const ctx = {
     reconnectAttempts: 0,
     socket: null,
@@ -101,6 +101,8 @@ export function upBitSocketDataLoad(setUpbitData) {
     cache: new Map(),
     setUpbitData,
   }
+
+  if (upbitData.length < 1) return
 
   connectUpbit(ctx)
 }
