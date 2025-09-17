@@ -146,25 +146,6 @@ function scheduleReconnect(ctx) {
   }, delayMs)
 }
 
-function checkSocketOpen(ctx) {
-  // 소켓이 연결(readyState === 1)된 후에만 요청을 보냄
-  if (ctx.socket.readyState === WebSocket.OPEN) {
-    ctx.socket.send(JSON.stringify(requestField))
-    console.log('send', JSON.stringify(requestField))
-    return true
-  }
-}
-// else {
-//   // 연결이 아직 안 된 경우, 연결될 때까지 대기 후 전송
-//   ctx.socket.addEventListener(
-//     'open',
-//     () => {
-//       ctx.socket.send(JSON.stringify(requestField))
-//       console.log('send (delayed)', JSON.stringify(requestField))
-//     },
-//     { once: true }
-//   )
-// }
 function connectUpbit(ctx) {
   try {
     ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
@@ -181,7 +162,9 @@ function connectUpbit(ctx) {
       { format: 'DEFAULT' },
     ]
 
-    if (!checkSocketOpen(ctx)) return scheduleReconnect(ctx)
+    // console.log('send', ctx.socket.send(JSON.stringify(requestField)))
+
+    ctx.socket.send(JSON.stringify(requestField))
 
     ctx.reconnectAttempts = 0
     console.info('[Upbit WS] 연결 성공')

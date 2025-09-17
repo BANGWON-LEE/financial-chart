@@ -23,6 +23,13 @@ export default function Main() {
 
     setUpbitData(pastUpbitDataObj.reverse())
   }
+
+  useEffect(() => {
+    loadUpbitPastData(setUpbitData, focusDate).then(() => {
+      upBitSocketDataLoad(setUpbitData)
+    })
+  }, [])
+
   const [upbitData, setUpbitData] = useState([])
   const app = initializeApp(firebaseConfig)
 
@@ -89,32 +96,6 @@ export default function Main() {
   function compareDateRange(firstDate) {
     setFocusDate(firstDate)
   }
-
-  useEffect(() => {
-    loadUpbitPastData(setUpbitData, focusDate).then(() => {
-      upBitSocketDataLoad(setUpbitData)
-    })
-
-    // async function setupFCM() {
-    //   if ('serviceWorker' in navigator) {
-    //     const registration = await navigator.serviceWorker.register(
-    //       '/firebase-messaging-sw.js',
-    //       {
-    //         type: 'module',
-    //       }
-    //     )
-    //     const permission = await Notification.requestPermission()
-    //     if (permission === 'granted') {
-    //       const token = await getToken(message, {
-    //         vapidKey: import.meta.env.VITE_FIREBASE_VAPID_PUBLIC_KEY,
-    //         serviceWorkerRegistration: registration, // 🔥 핵심
-    //       })
-    //       console.log('✅ FCM 토큰:', token)
-    //     }
-    //   }
-    // }
-    // setupFCM()
-  }, [])
 
   function updateXaxisEnd(xState) {
     const zeroRagne =
