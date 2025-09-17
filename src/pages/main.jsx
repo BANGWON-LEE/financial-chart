@@ -25,11 +25,11 @@ export default function Main() {
   }
 
   useEffect(() => {
-    // try {
-    //   loadUpbitPastData(setUpbitData, focusDate)
-    // } catch (error) {
-    //   console.log('api error', error)
-    // }
+    try {
+      loadUpbitPastData(setUpbitData, focusDate)
+    } catch (error) {
+      console.log('api error', error)
+    }
     upBitSocketDataLoad(setUpbitData)
   }, [])
 
