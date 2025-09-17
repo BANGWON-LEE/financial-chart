@@ -94,54 +94,113 @@ function checkDuplicationTime(cache, secondTimestamp, newData) {
 }
 
 export function upBitSocketDataLoad(setUpbitData) {
-  const socket = new WebSocket('wss://api.upbit.com/websocket/v1')
+  const ctx = {
+    reconnectAttempts: 0,
+    socket: null,
+    reconnectTimer: null,
+    cache: new Map(),
+    setUpbitData,
+  }
 
-  socket.binaryType = 'arraybuffer'
-  socket.onopen = () => {
+  connectUpbit(ctx)
+}
+
+// ====== 모듈 상단 헬퍼들 ======
+function handleUpbitTextMessage(text, cache, setUpbitData) {
+  const data = JSON.parse(text)
+  const secondTimestamp = Math.floor(data.timestamp / 1000)
+  const newData = {
+    o: data.trade_price,
+    x: secondTimestamp * 1000,
+    h: data.trade_price,
+    l: data.trade_price,
+    c: data.trade_price,
+  }
+  const result = checkDuplicationTime(cache, secondTimestamp, newData)
+  const signal = outerChartRealSignal()
+  if (signal.isOn('ChartEvent') === true) {
+    setUpbitData(prev => {
+      return [...prev, ...store.get(), result]
+    })
+    if (store.get().length > 0) {
+      store.reset()
+    }
+  } else if (signal.isOn('ChartEvent') === false) {
+    store.set(result)
+  }
+}
+
+// startPollingFallback 제거: 폴링 없이 WS만 사용
+
+function scheduleReconnect(ctx) {
+  if (ctx.reconnectTimer) return
+  ctx.reconnectAttempts += 1
+  const delayMs = Math.min(30000, 1000 * Math.pow(2, ctx.reconnectAttempts))
+  console.warn('[Upbit WS] 연결 실패, 재시도 예정', {
+    attempt: ctx.reconnectAttempts,
+    retryInMs: delayMs,
+  })
+  ctx.reconnectTimer = setTimeout(() => {
+    ctx.reconnectTimer = null
+    connectUpbit(ctx)
+  }, delayMs)
+}
+
+function connectUpbit(ctx) {
+  try {
+    ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
+  } catch (e) {
+    scheduleReconnect(ctx)
+    return
+  }
+  ctx.socket.binaryType = 'arraybuffer'
+
+  ctx.socket.onopen = () => {
     const requestField = [
       { ticket: 'test' },
       { type: 'ticker', codes: ['KRW-BTC'] },
-      {
-        format: 'DEFAULT',
-      },
+      { format: 'DEFAULT' },
     ]
-    socket.send(JSON.stringify(requestField))
+    ctx.socket.send(JSON.stringify(requestField))
+    ctx.reconnectAttempts = 0
+    console.info('[Upbit WS] 연결 성공')
   }
 
-  const cache = new Map()
-
-  socket.onmessage = event => {
-    const textData = new TextDecoder('utf-8').decode(event.data)
-
-    // const reader = new FileReader()
-    // reader.readAsText(textData)
-    // reader.onload = () => {
-    const data = JSON.parse(textData)
-    const secondTimestamp = Math.floor(data.timestamp / 1000)
-    const newData = {
-      o: data.trade_price,
-      x: secondTimestamp * 1000,
-      h: data.trade_price,
-      l: data.trade_price,
-      c: data.trade_price,
+  ctx.socket.onmessage = event => {
+    const dataObj = event.data
+    if (dataObj instanceof ArrayBuffer) {
+      const text = new TextDecoder('utf-8').decode(new Uint8Array(dataObj))
+      try {
+        handleUpbitTextMessage(text, ctx.cache, ctx.setUpbitData)
+      } catch (_) {}
+      return
     }
-
-    const result = checkDuplicationTime(cache, secondTimestamp, newData)
-
-    const signal = outerChartRealSignal()
-
-    if (signal.isOn('ChartEvent') === true) {
-      // console.log('pastUpbitData', pastUpbitData())
-
-      setUpbitData(prev => {
-        return [...prev, ...store.get(), result]
-      })
-      if (store.get().length > 0) {
-        store.reset()
+    if (typeof Blob !== 'undefined' && dataObj instanceof Blob) {
+      const reader = new FileReader()
+      reader.onload = () => {
+        try {
+          handleUpbitTextMessage(reader.result, ctx.cache, ctx.setUpbitData)
+        } catch (_) {}
       }
-    } else if (signal.isOn('ChartEvent') === false) {
-      store.set(result)
+      reader.readAsText(dataObj)
+      return
     }
-    // }
+    if (typeof dataObj === 'string') {
+      try {
+        handleUpbitTextMessage(dataObj, ctx.cache, ctx.setUpbitData)
+      } catch (_) {}
+    }
+  }
+
+  ctx.socket.onerror = err => {
+    console.error('[Upbit WS] 소켓 오류', err)
+    try {
+      ctx.socket.close()
+    } catch (_) {}
+  }
+
+  ctx.socket.onclose = () => {
+    console.warn('[Upbit WS] 연결 종료, 재연결 시도')
+    scheduleReconnect(ctx)
   }
 }
