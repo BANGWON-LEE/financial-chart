@@ -26,7 +26,7 @@ export default function Main() {
 
   useEffect(() => {
     loadUpbitPastData(setUpbitData, focusDate)
-    upBitSocketDataLoad(upbitData, setUpbitData)
+    upBitSocketDataLoad(setUpbitData)
   }, [])
 
   const [upbitData, setUpbitData] = useState([])
