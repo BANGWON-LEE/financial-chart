@@ -150,6 +150,7 @@ function connectUpbit(ctx) {
   try {
     ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
   } catch (e) {
+    console.error('[Upbit WS] 소켓 생성 실패', e)
     scheduleReconnect(ctx)
     return
   }
