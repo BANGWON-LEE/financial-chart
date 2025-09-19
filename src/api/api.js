@@ -76,6 +76,13 @@ export function getUpbitPastData(focusDate) {
 
 const store = outerDataStore()
 
+function clearCacheMap(cache) {
+  const sizeResetCondition = 60
+  if (cache.size > sizeResetCondition) {
+    cache.clear()
+  }
+}
+
 function checkDuplicationTime(cache, secondTimestamp, newData) {
   const candle = cache.get(secondTimestamp) || newData
 
@@ -83,6 +90,7 @@ function checkDuplicationTime(cache, secondTimestamp, newData) {
     // console.log('secondTimestamp', secondTimestamp)
     cache.set(secondTimestamp, newData)
   } else {
+    clearCacheMap(cache)
     candle.h = Math.max(candle.h, newData.h)
     candle.l = Math.min(candle.l, newData.l)
     candle.c = newData.c
@@ -105,7 +113,8 @@ export function upBitSocketDataLoad(setUpbitData) {
   connectUpbit(ctx)
 }
 
-// ====== 모듈 상단 헬퍼들 ======
+// function
+
 function handleUpbitTextMessage(text, cache, setUpbitData) {
   const data = JSON.parse(text)
   const secondTimestamp = Math.floor(data.timestamp / 1000)
@@ -118,8 +127,16 @@ function handleUpbitTextMessage(text, cache, setUpbitData) {
   }
   const result = checkDuplicationTime(cache, secondTimestamp, newData)
   const signal = outerChartRealSignal()
+
   if (signal.isOn('ChartEvent') === true) {
     setUpbitData(prev => {
+      const newArr = [...prev]
+      const lastIndex = newArr.length - 1
+      if (prev[lastIndex].x === result.x) {
+        newArr[lastIndex] = result
+        return [...newArr, ...store.get()]
+      }
+
       return [...prev, ...store.get(), result]
     })
     if (store.get().length > 0) {
