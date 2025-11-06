@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 import { outerChartRealSignal } from '../util/signal'
-import { xaxisStore } from '../util/xaxisState'
 import { outerDataStore } from '../util/chartEventAction'
 
 // export function upBitSocketData(setUpbitData, realSignal) {
@@ -113,8 +112,6 @@ export function upBitSocketDataLoad(setUpbitData) {
   connectUpbit(ctx)
 }
 
-// function
-
 function handleUpbitTextMessage(text, cache, setUpbitData) {
   const data = JSON.parse(text)
   const secondTimestamp = Math.floor(data.timestamp / 1000)
@@ -167,8 +164,9 @@ function connectUpbit(ctx) {
   try {
     ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
   } catch (e) {
+    const nowDate = formatRequestDate(new Date())
+    loadUpbitCurrentPastData(nowDate)
     scheduleReconnect(ctx)
-    return
   }
   ctx.socket.binaryType = 'arraybuffer'
 
