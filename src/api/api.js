@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import { outerChartRealSignal } from '../util/signal'
 import { outerDataStore } from '../util/chartEventAction'
+import { loadUpbitCurrentPastData } from '../pages/main'
 
 // export function upBitSocketData(setUpbitData, realSignal) {
 //   const socket = new WebSocket('wss://api.upbit.com/websocket/v1')
