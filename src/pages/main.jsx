@@ -6,7 +6,7 @@ import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken } from 'firebase/messaging'
 import { outerChartRealSignal } from '../util/signal'
 import { xRangeEvent } from '../util/chartEventAction'
-import { formatMSDate, formatRequestDate, formatTimestamp } from '../util/date'
+import { formatRequestDate, formatTimestamp } from '../util/date'
 
 export default function Main() {
   async function loadUpbitPastData(setUpbitData, focusDate) {
@@ -14,7 +14,6 @@ export default function Main() {
 
     const pastUpbitDataObj = pastData.data.map(data => ({
       o: data.opening_price,
-      // x: new Date(data.candle_date_time_kst).getTime(),
       x: new Date(data.candle_date_time_kst).getTime(),
       h: data.high_price,
       l: data.low_price,
@@ -65,10 +64,9 @@ export default function Main() {
     xRangeEvent(chartRef.current.canvas, setXState)
   })
 
-  useEffect(() => {
-    // if (dataFirstDate() === undefined || dataFirstDate === false) return
-    // console.log('ttyy', focusDate, formatTimestamp(new Date(dataFirstDate())))
+  const dataFirstDate = () => upbitData[0]?.x !== undefined && upbitData[0]?.x
 
+  useEffect(() => {
     document.addEventListener('ChartEvent', e => {
       signal.update('ChartEvent', false)
       const msFocusDate = dataFirstDate()
@@ -104,8 +102,22 @@ export default function Main() {
     setUpbitData(prev => [...result, ...prev])
   }
 
-  const dataFirstDate = () => upbitData[0]?.x !== undefined && upbitData[0]?.x
-  // console.log('xState', new Date(), dataFirstDate())
+  async function loadUpbitCurrentPastData(focusDate) {
+    const pastData = await getUpbitPastData(focusDate)
+
+    const pastUpbitDataObj = pastData.data.map(data => ({
+      o: data.opening_price,
+      x: new Date(data.candle_date_time_kst).getTime(),
+      // x: data.candle_date_time_kst,
+      h: data.high_price,
+      l: data.low_price,
+      c: data.trade_price,
+    }))
+
+    const result = pastUpbitDataObj.reverse()
+
+    setUpbitData(prev => [...prev, ...result])
+  }
 
   useEffect(() => {
     if (focusDate !== signal.get('chartCurrentFocusDate')) {
