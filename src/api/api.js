@@ -164,11 +164,9 @@ function scheduleReconnect(ctx) {
 
 function connectUpbit(ctx) {
   try {
-    // ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
+    ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
     throw new Error()
   } catch (e) {
-    // console.log('ffff')
-    // const nowDate = formatRequestDate(new Date())
     loadUpbitCurrentData()
     scheduleReconnect(ctx)
   }
