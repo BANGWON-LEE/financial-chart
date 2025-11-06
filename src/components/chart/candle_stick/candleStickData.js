@@ -1,8 +1,5 @@
 import { xaxisStore } from '../../../util/xaxisState'
 
-/**
- * 데이터 세팅: candlestick 전용
- */
 export function setCandleStickData(data) {
   return {
     datasets: [
@@ -164,9 +161,7 @@ export function setOptionCandleStickData() {
         if (xaxis.getX() >= -30) return false
         const myEvent = new CustomEvent('ChartEvent', {
           detail: {
-            // focusDetail: { min: chart.scales.x.min, max: chart.scales.x.max },
             focusDate: { start: chart.scales.x.min },
-            // toPast: true,
           },
         })
         document.dispatchEvent(myEvent)
@@ -214,8 +209,6 @@ export function setOptionCandleStickData() {
         grid: {
           color: '#e0e3eb',
         },
-        // min: new Date() - 200000,
-        // max: new Date(),
       },
       y: {
         beginAtZero: false,
