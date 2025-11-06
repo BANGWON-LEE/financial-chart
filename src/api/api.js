@@ -166,8 +166,9 @@ function connectUpbit(ctx) {
     ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
   } catch (e) {
     const nowDate = formatRequestDate(new Date())
-    loadUpbitCurrentPastData(nowDate)
-    scheduleReconnect(ctx)
+    loadUpbitCurrentPastData(nowDate).then(() => {
+      scheduleReconnect(ctx)
+    })
   }
   ctx.socket.binaryType = 'arraybuffer'
 
