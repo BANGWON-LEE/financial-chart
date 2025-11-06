@@ -102,7 +102,7 @@ function checkDuplicationTime(cache, secondTimestamp, newData) {
   return cache.get(secondTimestamp) || candle
 }
 
-export function upBitSocketDataLoad(setUpbitData) {
+export function upBitSocketDataLoad(setUpbitData, loadUpbitCurrentData) {
   const ctx = {
     reconnectAttempts: 0,
     socket: null,
@@ -111,7 +111,7 @@ export function upBitSocketDataLoad(setUpbitData) {
     setUpbitData,
   }
 
-  connectUpbit(ctx)
+  connectUpbit(ctx, loadUpbitCurrentData)
 }
 
 function handleUpbitTextMessage(text, cache, setUpbitData) {
@@ -162,7 +162,7 @@ function scheduleReconnect(ctx) {
   }, delayMs)
 }
 
-function connectUpbit(ctx) {
+function connectUpbit(ctx, loadUpbitCurrentData) {
   try {
     ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
     throw new Error()
