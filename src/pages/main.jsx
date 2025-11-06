@@ -21,7 +21,7 @@ export async function loadUpbitCurrentPastData(focusDate) {
   }))
 
   const result = pastUpbitDataObj.reverse()
-
+  console.log('폴링 확인')
   setUpbitData(prev => [...prev, ...result])
 }
 
