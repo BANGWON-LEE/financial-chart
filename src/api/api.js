@@ -2,7 +2,7 @@ import axios from 'axios'
 
 import { outerChartRealSignal } from '../util/signal'
 import { outerDataStore } from '../util/chartEventAction'
-import { loadUpbitCurrentPastData } from '../pages/main'
+import { loadUpbitCurrentData } from '../pages/main'
 
 // export function upBitSocketData(setUpbitData, realSignal) {
 //   const socket = new WebSocket('wss://api.upbit.com/websocket/v1')
@@ -62,6 +62,7 @@ import { loadUpbitCurrentPastData } from '../pages/main'
 
 export function getUpbitPastData(focusDate) {
   // const url = `https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=${range}`
+
   const url = `https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=200&to=${focusDate}`
 
   return new Promise((resolve, reject) => {
@@ -163,12 +164,13 @@ function scheduleReconnect(ctx) {
 
 function connectUpbit(ctx) {
   try {
-    ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
+    // ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
+    throw new Error()
   } catch (e) {
-    const nowDate = formatRequestDate(new Date())
-    loadUpbitCurrentPastData(nowDate).then(() => {
-      scheduleReconnect(ctx)
-    })
+    // console.log('ffff')
+    // const nowDate = formatRequestDate(new Date())
+    loadUpbitCurrentData()
+    scheduleReconnect(ctx)
   }
   ctx.socket.binaryType = 'arraybuffer'
 

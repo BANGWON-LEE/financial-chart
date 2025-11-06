@@ -8,8 +8,8 @@ import { outerChartRealSignal } from '../util/signal'
 import { xRangeEvent } from '../util/chartEventAction'
 import { formatRequestDate, formatTimestamp } from '../util/date'
 
-export function loadUpbitCurrentPastData(focusDate) {
-  const pastData = getUpbitPastData(focusDate)
+export async function loadUpbitCurrentData() {
+  const pastData = await getUpbitPastData(formatRequestDate(new Date()))
 
   const pastUpbitDataObj = pastData.data.map(data => ({
     o: data.opening_price,
@@ -21,7 +21,6 @@ export function loadUpbitCurrentPastData(focusDate) {
   }))
 
   const result = pastUpbitDataObj.reverse()
-  console.log('폴링 확인')
   setUpbitData(prev => [...prev, ...result])
 }
 
