@@ -21,7 +21,7 @@ export async function loadUpbitCurrentData(setUpbitData) {
   }))
 
   const result = pastUpbitDataObj.reverse()
-  console.log('폴링 확인', result, '<===>', pastData)
+  // console.log('폴링 확인', result, '<===>', pastData)
   // setUpbitData(prev => [...prev, ...result])
   setUpbitData(prev => [...prev, ...result])
 }

@@ -224,15 +224,15 @@ function connectUpbit(ctx, setUpbitData) {
   //   } catch (_) {}
   // }
 
-  ctx.socket.onerror = e => {
-    console.error('[Upbit WS] 소켓 오류', e)
-    loadUpbitCurrentData(setUpbitData).then(() => {
-      console.log('error signal', e)
-      // console.log('check')
-      scheduleReconnect(ctx)
-    })
-    // throw new Error()
-  }
+  // ctx.socket.onerror = e => {
+  //   console.error('[Upbit WS] 소켓 오류', e)
+  //   loadUpbitCurrentData(setUpbitData).then(() => {
+  //     console.log('error signal', e)
+  //     // console.log('check')
+  //     scheduleReconnect(ctx)
+  //   })
+  //   // throw new Error()
+  // }
 
   // ctx.socket.onclose = () => {
   //   console.warn('[Upbit WS] 연결 종료, 재연결 시도')
