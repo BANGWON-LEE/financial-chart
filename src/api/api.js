@@ -168,8 +168,10 @@ function connectUpbit(ctx, setUpbitData) {
     ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
     // throw new Error()
   } catch (e) {
-    loadUpbitCurrentData(setUpbitData)
-    scheduleReconnect(ctx)
+    loadUpbitCurrentData(setUpbitData).then(() => {
+      console.log('check')
+      scheduleReconnect(ctx)
+    })
   }
   ctx.socket.binaryType = 'arraybuffer'
 
