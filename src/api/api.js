@@ -234,8 +234,8 @@ function connectUpbit(ctx, setUpbitData) {
     // throw new Error()
   }
 
-  ctx.socket.onclose = () => {
-    console.warn('[Upbit WS] 연결 종료, 재연결 시도')
-    scheduleReconnect(ctx)
-  }
+  // ctx.socket.onclose = () => {
+  //   console.warn('[Upbit WS] 연결 종료, 재연결 시도')
+  //   scheduleReconnect(ctx)
+  // }
 }
