@@ -225,7 +225,7 @@ function connectUpbit(ctx, setUpbitData) {
   // }
 
   ctx.socket.onerror = e => {
-    console.error('[Upbit WS] 소켓 오류', err)
+    console.error('[Upbit WS] 소켓 오류', e)
     loadUpbitCurrentData(setUpbitData).then(() => {
       console.log('error signal', e)
       // console.log('check')
