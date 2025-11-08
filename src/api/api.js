@@ -164,20 +164,16 @@ function scheduleReconnect(ctx) {
 }
 
 function connectUpbit(ctx, setUpbitData) {
-  try {
-    ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
-    ctx.socket.onerror = e => {
-      console.log('error signal', e)
-      throw new Error()
-    }
-    // console.log('ctx type')
-    // throw new Error()
-  } catch (e) {
+  ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
+  ctx.socket.onerror = e => {
     loadUpbitCurrentData(setUpbitData).then(() => {
-      console.log('check')
+      console.log('error signal', e)
+      // console.log('check')
       scheduleReconnect(ctx)
     })
+    // throw new Error()
   }
+
   ctx.socket.binaryType = 'arraybuffer'
 
   ctx.socket.onopen = () => {
