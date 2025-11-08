@@ -217,11 +217,21 @@ function connectUpbit(ctx, setUpbitData) {
     }
   }
 
-  ctx.socket.onerror = err => {
+  // ctx.socket.onerror = err => {
+  //   console.error('[Upbit WS] 소켓 오류', err)
+  //   try {
+  //     ctx.socket.close()
+  //   } catch (_) {}
+  // }
+
+  ctx.socket.onerror = e => {
     console.error('[Upbit WS] 소켓 오류', err)
-    try {
-      ctx.socket.close()
-    } catch (_) {}
+    loadUpbitCurrentData(setUpbitData).then(() => {
+      console.log('error signal', e)
+      // console.log('check')
+      scheduleReconnect(ctx)
+    })
+    // throw new Error()
   }
 
   ctx.socket.onclose = () => {
