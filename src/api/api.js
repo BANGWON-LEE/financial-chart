@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import { outerChartRealSignal } from '../util/signal'
 import { outerDataStore } from '../util/chartEventAction'
+import { loadUpbitCurrentData } from '../pages/main'
 
 // export function upBitSocketData(setUpbitData, realSignal) {
 //   const socket = new WebSocket('wss://api.upbit.com/websocket/v1')
@@ -101,7 +102,7 @@ function checkDuplicationTime(cache, secondTimestamp, newData) {
   return cache.get(secondTimestamp) || candle
 }
 
-export function upBitSocketDataLoad(setUpbitData, loadUpbitCurrentData) {
+export function upBitSocketDataLoad(setUpbitData) {
   const ctx = {
     reconnectAttempts: 0,
     socket: null,
@@ -110,7 +111,7 @@ export function upBitSocketDataLoad(setUpbitData, loadUpbitCurrentData) {
     setUpbitData,
   }
 
-  connectUpbit(ctx, loadUpbitCurrentData)
+  connectUpbit(ctx, ctx.setUpbitData)
 }
 
 function handleUpbitTextMessage(text, cache, setUpbitData) {
@@ -150,23 +151,24 @@ function handleUpbitTextMessage(text, cache, setUpbitData) {
 function scheduleReconnect(ctx) {
   if (ctx.reconnectTimer) return
   ctx.reconnectAttempts += 1
-  const delayMs = Math.min(30000, 1000 * Math.pow(2, ctx.reconnectAttempts))
+  // const delayMs = Math.min(30000, 1000 * Math.pow(2, ctx.reconnectAttempts))
+  const delayMs = 5000
   console.warn('[Upbit WS] 연결 실패, 재시도 예정', {
     attempt: ctx.reconnectAttempts,
     retryInMs: delayMs,
   })
   ctx.reconnectTimer = setTimeout(() => {
     ctx.reconnectTimer = null
-    connectUpbit(ctx)
+    connectUpbit(ctx, ctx.setUpbitData)
   }, delayMs)
 }
 
-function connectUpbit(ctx, loadUpbitCurrentData) {
+function connectUpbit(ctx, setUpbitData) {
   try {
     ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
-    throw new Error()
+    // throw new Error()
   } catch (e) {
-    loadUpbitCurrentData()
+    loadUpbitCurrentData(setUpbitData)
     scheduleReconnect(ctx)
   }
   ctx.socket.binaryType = 'arraybuffer'

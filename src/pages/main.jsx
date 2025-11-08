@@ -8,7 +8,26 @@ import { outerChartRealSignal } from '../util/signal'
 import { xRangeEvent } from '../util/chartEventAction'
 import { formatRequestDate, formatTimestamp } from '../util/date'
 
+export async function loadUpbitCurrentData(setUpbitData) {
+  const pastData = await getUpbitPastData(formatRequestDate(new Date()))
+
+  const pastUpbitDataObj = pastData.data.map(data => ({
+    o: data.opening_price,
+    x: new Date(data.candle_date_time_kst).getTime(),
+    // x: data.candle_date_time_kst,
+    h: data.high_price,
+    l: data.low_price,
+    c: data.trade_price,
+  }))
+
+  const result = pastUpbitDataObj.reverse()
+  console.log('폴링 확인', result, '<===>', pastData)
+  // setUpbitData(prev => [...prev, ...result])
+  setUpbitData(prev => [...prev, ...result])
+}
+
 export default function Main() {
+  const [upbitData, setUpbitData] = useState([])
   async function loadUpbitPastData(setUpbitData, focusDate) {
     const pastData = await getUpbitPastData(focusDate)
 
@@ -25,7 +44,7 @@ export default function Main() {
 
   useEffect(() => {
     loadUpbitPastData(setUpbitData, focusDate).then(() => {
-      upBitSocketDataLoad(setUpbitData, loadUpbitCurrentData)
+      upBitSocketDataLoad(setUpbitData)
     })
 
     // async function setupFCM() {
@@ -49,23 +68,6 @@ export default function Main() {
     // setupFCM()
   }, [])
 
-  async function loadUpbitCurrentData() {
-    const pastData = await getUpbitPastData(formatRequestDate(new Date()))
-
-    const pastUpbitDataObj = pastData.data.map(data => ({
-      o: data.opening_price,
-      x: new Date(data.candle_date_time_kst).getTime(),
-      // x: data.candle_date_time_kst,
-      h: data.high_price,
-      l: data.low_price,
-      c: data.trade_price,
-    }))
-
-    const result = pastUpbitDataObj.reverse()
-    console.log('폴링 확인', result, '<===>', pastData)
-    setUpbitData(prev => [...prev, ...result])
-  }
-
   async function loadUpbitMorePastData(focusDate) {
     const pastData = await getUpbitPastData(focusDate)
 
@@ -83,7 +85,6 @@ export default function Main() {
     setUpbitData(prev => [...result, ...prev])
   }
 
-  const [upbitData, setUpbitData] = useState([])
   const app = initializeApp(firebaseConfig)
 
   const message = getMessaging(app)
