@@ -165,14 +165,6 @@ function scheduleReconnect(ctx) {
 
 function connectUpbit(ctx, setUpbitData) {
   ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
-  ctx.socket.onerror = e => {
-    loadUpbitCurrentData(setUpbitData).then(() => {
-      console.log('error signal', e)
-      // console.log('check')
-      scheduleReconnect(ctx)
-    })
-    // throw new Error()
-  }
 
   ctx.socket.binaryType = 'arraybuffer'
 
@@ -217,25 +209,22 @@ function connectUpbit(ctx, setUpbitData) {
     }
   }
 
-  // ctx.socket.onerror = err => {
-  //   console.error('[Upbit WS] 소켓 오류', err)
-  //   try {
-  //     ctx.socket.close()
-  //   } catch (_) {}
-  // }
+  ctx.socket.onerror = e => {
+    console.error('[Upbit WS] 소켓 오류', e)
+    loadUpbitCurrentData(setUpbitData).then(() => {
+      console.log('error signal', e)
+      // console.log('check')
+      scheduleReconnect(ctx)
+    })
+    // throw new Error()
+  }
 
-  // ctx.socket.onerror = e => {
-  //   console.error('[Upbit WS] 소켓 오류', e)
-  //   loadUpbitCurrentData(setUpbitData).then(() => {
-  //     console.log('error signal', e)
-  //     // console.log('check')
-  //     scheduleReconnect(ctx)
-  //   })
-  //   // throw new Error()
-  // }
-
-  // ctx.socket.onclose = () => {
-  //   console.warn('[Upbit WS] 연결 종료, 재연결 시도')
-  //   scheduleReconnect(ctx)
-  // }
+  ctx.socket.onclose = () => {
+    console.warn('[Upbit WS] 연결 종료, 재연결 시도')
+    loadUpbitCurrentData(setUpbitData).then(() => {
+      console.log('error signal', e)
+      // console.log('check')
+      scheduleReconnect(ctx)
+    })
+  }
 }
