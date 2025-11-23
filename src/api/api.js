@@ -163,9 +163,10 @@ function scheduleReconnect(ctx) {
 }
 
 function connectUpbit(ctx, setUpbitData) {
-  ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1', {
-    headers: { 'Cache-Control': 'no-transform' },
-  })
+  ctx.socket = new WebSocket(
+    `wss://api.upbit.com/websocket/v1?cache_bust=${Date.now()}&no_proxy=1`
+  )
+
   ctx.socket.binaryType = 'arraybuffer'
 
   ctx.socket.onopen = () => {
