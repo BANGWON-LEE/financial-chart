@@ -44,7 +44,9 @@ export default function Main() {
 
   useEffect(() => {
     loadUpbitPastData(setUpbitData, focusDate).then(() => {
-      upBitSocketDataLoad(setUpbitData)
+      setTimeout(() => {
+        upBitSocketDataLoad(setUpbitData)
+      }, 800)
     })
 
     // async function setupFCM() {
