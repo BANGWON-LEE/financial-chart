@@ -1,6 +1,7 @@
 // import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
+import React from 'react'
 import './App.css'
 import Main from './pages/main'
 
@@ -9,7 +10,9 @@ function App() {
 
   return (
     <>
-      <Main />
+      <React.Suspense fallback={<div>Loading...</div>}>
+        <Main />
+      </React.Suspense>
     </>
   )
 }
