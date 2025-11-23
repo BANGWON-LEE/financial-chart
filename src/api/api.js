@@ -2,7 +2,6 @@ import axios from 'axios'
 
 import { outerChartRealSignal } from '../util/signal'
 import { outerDataStore } from '../util/chartEventAction'
-import { loadUpbitCurrentData } from '../pages/main'
 
 // export function upBitSocketData(setUpbitData, realSignal) {
 //   const socket = new WebSocket('wss://api.upbit.com/websocket/v1')
@@ -164,8 +163,9 @@ function scheduleReconnect(ctx) {
 }
 
 function connectUpbit(ctx, setUpbitData) {
-  ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
-
+  ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1', {
+    headers: { 'Cache-Control': 'no-transform' },
+  })
   ctx.socket.binaryType = 'arraybuffer'
 
   ctx.socket.onopen = () => {
@@ -211,20 +211,11 @@ function connectUpbit(ctx, setUpbitData) {
 
   ctx.socket.onerror = e => {
     console.error('[Upbit WS] 소켓 오류', e)
-    loadUpbitCurrentData(setUpbitData).then(() => {
-      console.log('error signal', e)
-      // console.log('check')
-      scheduleReconnect(ctx)
-    })
-    // throw new Error()
+    scheduleReconnect(ctx)
   }
 
-  // ctx.socket.onclose = () => {
-  //   console.warn('[Upbit WS] 연결 종료, 재연결 시도')
-  //   loadUpbitCurrentData(setUpbitData).then(() => {
-  //     console.log('error signal', e)
-  //     // console.log('check')
-  //     scheduleReconnect(ctx)
-  //   })
-  // }
+  ctx.socket.onclose = () => {
+    console.warn('[Upbit WS] 연결 종료, 재연결 시도')
+    scheduleReconnect(ctx)
+  }
 }
