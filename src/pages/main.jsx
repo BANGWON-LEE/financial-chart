@@ -46,7 +46,7 @@ export default function Main() {
     loadUpbitPastData(setUpbitData, focusDate).then(() => {
       setTimeout(() => {
         upBitSocketDataLoad(setUpbitData)
-      }, 800)
+      }, 1700)
     })
 
     // async function setupFCM() {

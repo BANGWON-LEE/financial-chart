@@ -151,7 +151,7 @@ function scheduleReconnect(ctx) {
   if (ctx.reconnectTimer) return
   ctx.reconnectAttempts += 1
 
-  const delayMs = 5000
+  const delayMs = 1700
   console.warn('[Upbit WS] 연결 실패, 재시도 예정', {
     attempt: ctx.reconnectAttempts,
     retryInMs: delayMs,
