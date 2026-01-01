@@ -1,11 +1,8 @@
 import { setOptionCandleStickData } from '../components/chart/candle_stick/candleStickData'
-import { outerChartRealSignal } from './signal'
 import { xaxisStore } from './xaxisState'
-// import { chartRef } from '../components/chart/candle_stick/CandleStickMain'
 
 const chart = setOptionCandleStickData()
 const xaxis = xaxisStore()
-const signal = outerChartRealSignal()
 
 let xActive = 0
 export const xRangeEvent = (chartRef, setXState) => {
@@ -19,7 +16,12 @@ export const xRangeEvent = (chartRef, setXState) => {
         xaxis.rightX()
       }
       setXState(xaxis.getX())
-      if (xaxis.getX() >= -30) signal.update('ChartEvent', true)
+      
+      // Context API 상태 업데이트를 위한 이벤트 발생
+      const chartEvent = new CustomEvent('UpdateChartSignal', { 
+        detail: { event: 'chartEvent', status: xaxis.getX() >= -30 } 
+      })
+      document.dispatchEvent(chartEvent)
     }
   })
 }
