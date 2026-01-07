@@ -110,7 +110,7 @@ export function upBitSocketDataLoad(setUpbitData) {
     setUpbitData,
   }
 
-  connectUpbit(ctx, ctx.setUpbitData)
+  connectUpbit(ctx)
 }
 
 function handleUpbitTextMessage(text, cache, setUpbitData) {
@@ -158,14 +158,12 @@ function scheduleReconnect(ctx) {
   })
   ctx.reconnectTimer = setTimeout(() => {
     ctx.reconnectTimer = null
-    connectUpbit(ctx, ctx.setUpbitData)
+    connectUpbit(ctx)
   }, delayMs)
 }
 
-function connectUpbit(ctx, setUpbitData) {
-  ctx.socket = new WebSocket(
-    `wss://api.upbit.com/websocket/v1?cb=${crypto.randomUUID()}&cache_bust=${Date.now()}&no_proxy=1`
-  )
+function connectUpbit(ctx) {
+  ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
 
   ctx.socket.binaryType = 'arraybuffer'
 
@@ -175,8 +173,6 @@ function connectUpbit(ctx, setUpbitData) {
       { type: 'ticker', codes: ['KRW-BTC'] },
       { format: 'DEFAULT' },
     ]
-
-    // console.log('send', ctx.socket.send(JSON.stringify(requestField)))
 
     ctx.socket.send(JSON.stringify(requestField))
 
