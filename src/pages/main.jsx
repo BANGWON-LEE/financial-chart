@@ -44,10 +44,8 @@ export default function Main() {
 
   useEffect(() => {
     loadUpbitPastData(setUpbitData, focusDate).then(() => {
-      setTimeout(() => {
-        upBitSocketDataLoad(setUpbitData)
-      }, 1700)
-    })
+      upBitSocketDataLoad(setUpbitData)
+    }, [])
 
     // async function setupFCM() {
     //   if ('serviceWorker' in navigator) {
@@ -76,7 +74,6 @@ export default function Main() {
     const pastUpbitDataObj = pastData.data.map(data => ({
       o: data.opening_price,
       x: new Date(data.candle_date_time_kst).getTime(),
-      // x: data.candle_date_time_kst,
       h: data.high_price,
       l: data.low_price,
       c: data.trade_price,
@@ -89,7 +86,7 @@ export default function Main() {
 
   const app = initializeApp(firebaseConfig)
 
-  const message = getMessaging(app)
+  // const message = getMessaging(app)
   const chartRef = useRef(null)
   const [xState, setXState] = useState(-30)
   const signal = outerChartRealSignal()
@@ -147,14 +144,12 @@ export default function Main() {
     <div>
       <AskChart
         type={'candlestick'}
-        // data={upbitData.slice(-420)}
         data={upbitData.slice(
           updateXaxisEnd(xState),
           updateXaxisStart(xState + 29)
         )}
         width={836}
         height={342}
-        // height={342}
         uniqueChartName={'realTime'}
         timePropertyName={'x'}
         chartRef={chartRef}
