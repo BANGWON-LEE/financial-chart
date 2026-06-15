@@ -3,7 +3,7 @@ import AskChart from '../components/chart/AskChart'
 import { getUpbitPastData, upBitSocketDataLoad } from '../api/api'
 import { firebaseConfig } from '../api/firebase'
 import { initializeApp } from 'firebase/app'
-import { getMessaging, getToken } from 'firebase/messaging'
+// import { getMessaging, getToken } from 'firebase/messaging'
 import { outerChartRealSignal } from '../util/signal'
 import { xRangeEvent } from '../util/chartEventAction'
 import { formatRequestDate, formatTimestamp } from '../util/date'
@@ -14,7 +14,6 @@ export async function loadUpbitCurrentData(setUpbitData) {
   const pastUpbitDataObj = pastData.data.map(data => ({
     o: data.opening_price,
     x: new Date(data.candle_date_time_kst).getTime(),
-    // x: data.candle_date_time_kst,
     h: data.high_price,
     l: data.low_price,
     c: data.trade_price,
@@ -43,29 +42,20 @@ export default function Main() {
   }
 
   useEffect(() => {
-    loadUpbitPastData(setUpbitData, focusDate).then(() => {
-      upBitSocketDataLoad(setUpbitData)
-    }, [])
+    let cleanupSocket
 
-    // async function setupFCM() {
-    //   if ('serviceWorker' in navigator) {
-    //     const registration = await navigator.serviceWorker.register(
-    //       '/firebase-messaging-sw.js',
-    //       {
-    //         type: 'module',
-    //       }
-    //     )
-    //     const permission = await Notification.requestPermission()
-    //     if (permission === 'granted') {
-    //       const token = await getToken(message, {
-    //         vapidKey: import.meta.env.VITE_FIREBASE_VAPID_PUBLIC_KEY,
-    //         serviceWorkerRegistration: registration, // 🔥 핵심
-    //       })
-    //       console.log('✅ FCM 토큰:', token)
-    //     }
-    //   }
-    // }
-    // setupFCM()
+    loadUpbitPastData(setUpbitData, focusDate)
+      .then(() => {
+        cleanupSocket = upBitSocketDataLoad(setUpbitData)
+      })
+      .catch(error => {
+        console.error('초기 과거 데이터 로드 실패', error)
+        setUpbitData([])
+      })
+
+    return () => {
+      cleanupSocket()
+    }
   }, [])
 
   async function loadUpbitMorePastData(focusDate) {
@@ -91,7 +81,7 @@ export default function Main() {
   const [xState, setXState] = useState(-30)
   const signal = outerChartRealSignal()
   const [focusDate, setFocusDate] = useState(
-    signal.get('chartCurrentFocusDate')
+    signal.get('chartCurrentFocusDate'),
     // formatRequestDate(new Date())
   )
   useEffect(() => {
@@ -146,7 +136,7 @@ export default function Main() {
         type={'candlestick'}
         data={upbitData.slice(
           updateXaxisEnd(xState),
-          updateXaxisStart(xState + 29)
+          updateXaxisStart(xState + 29),
         )}
         width={836}
         height={342}
