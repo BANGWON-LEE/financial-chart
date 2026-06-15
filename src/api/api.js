@@ -3,65 +3,7 @@ import axios from 'axios'
 import { outerChartRealSignal } from '../util/signal'
 import { outerDataStore } from '../util/chartEventAction'
 
-// export function upBitSocketData(setUpbitData, realSignal) {
-//   const socket = new WebSocket('wss://api.upbit.com/websocket/v1')
-
-//   socket.onopen = () => {
-//     const requestField = [
-//       { ticket: 'test' },
-//       { type: 'ticker', codes: ['KRW-BTC'] },
-//       {
-//         format: 'DEFAULT',
-//       },
-//     ]
-//     socket.send(JSON.stringify(requestField))
-//   }
-
-//   const cache = new Map()
-
-//   socket.onmessage = event => {
-//     const reader = new FileReader()
-//     reader.readAsText(event.data)
-//     reader.onload = () => {
-//       const data = JSON.parse(reader.result)
-//       const secondTimestamp = Math.floor(data.timestamp / 1000)
-//       const newData = {
-//         o: data.trade_price,
-//         x: secondTimestamp * 1000,
-//         h: data.trade_price,
-//         l: data.trade_price,
-//         c: data.trade_price,
-//       }
-
-//       const candle = cache.get(secondTimestamp) || newData
-
-//       if (!cache.has(secondTimestamp)) {
-//         // console.log('secondTimestamp', secondTimestamp)
-//         cache.set(secondTimestamp, newData)
-//       } else {
-//         candle.h = Math.max(candle.h, newData.h)
-//         candle.l = Math.min(candle.l, newData.l)
-//         candle.c = newData.c
-//         // 소켓에 들어오는 데이터가 초 단위로 여러번 들어옴 따라서, 같은 초의 마지막 거래 가격을 갱신하기 위해
-//         // candle.c = newData.c로 할당해야 함
-//       }
-
-//       // console.log('활동 활동')
-
-//       if (realSignal === true) {
-//         setUpbitData(prev => {
-//           return [...prev, candle]
-//         })
-//       } else {
-//         setUpbitData(candle)
-//       }
-//     }
-//   }
-// }
-
 export function getUpbitPastData(focusDate) {
-  // const url = `https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=${range}`
-
   const url = `https://api.upbit.com/v1/candles/seconds?market=KRW-BTC&count=200&to=${focusDate}`
 
   return new Promise((resolve, reject) => {
@@ -101,6 +43,18 @@ function checkDuplicationTime(cache, secondTimestamp, newData) {
   return cache.get(secondTimestamp) || candle
 }
 
+function cleanUpReconnectTimer(ctx) {
+  if (!ctx.reconnectTimer) return
+  clearTimeout(ctx.reconnectTimer)
+  ctx.reconnectTimer = null
+}
+
+function cleanUpSocket(ctx) {
+  if (!ctx.socket) return
+  ctx.socket.close(1000, 'component cleanup')
+  ctx.socket = null
+}
+
 export function upBitSocketDataLoad(setUpbitData) {
   const ctx = {
     reconnectAttempts: 0,
@@ -108,9 +62,16 @@ export function upBitSocketDataLoad(setUpbitData) {
     reconnectTimer: null,
     cache: new Map(),
     setUpbitData,
+    closed: false,
   }
 
   connectUpbit(ctx)
+
+  return () => {
+    ctx.closed = true
+    cleanUpReconnectTimer(ctx)
+    cleanUpSocket(ctx)
+  }
 }
 
 function handleUpbitTextMessage(text, cache, setUpbitData) {
@@ -148,6 +109,7 @@ function handleUpbitTextMessage(text, cache, setUpbitData) {
 // startPollingFallback 제거: 폴링 없이 WS만 사용
 
 function scheduleReconnect(ctx) {
+  if (ctx.closed) return
   if (ctx.reconnectTimer) return
   ctx.reconnectAttempts += 1
 
@@ -158,11 +120,13 @@ function scheduleReconnect(ctx) {
   })
   ctx.reconnectTimer = setTimeout(() => {
     ctx.reconnectTimer = null
-    connectUpbit(ctx)
+    if (!ctx.closed) connectUpbit(ctx)
   }, delayMs)
 }
 
 function connectUpbit(ctx) {
+  if (ctx.closed) return
+
   ctx.socket = new WebSocket('wss://api.upbit.com/websocket/v1')
 
   ctx.socket.binaryType = 'arraybuffer'
