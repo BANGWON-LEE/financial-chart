@@ -54,7 +54,7 @@ export default function Main() {
       })
 
     return () => {
-      cleanupSocket()
+      cleanupSocket?.()
     }
   }, [])
 
@@ -85,29 +85,38 @@ export default function Main() {
     // formatRequestDate(new Date())
   )
   useEffect(() => {
-    xRangeEvent(chartRef.current.canvas, setXState)
-  })
+    const xEvent = xRangeEvent(chartRef.current.canvas, setXState)
+
+    return () => {
+      xEvent?.()
+    }
+  }, [])
 
   const dataFirstDate = () => upbitData[0]?.x !== undefined && upbitData[0]?.x
 
-  useEffect(() => {
-    document.addEventListener('ChartEvent', e => {
-      signal.update('ChartEvent', false)
-      const msFocusDate = dataFirstDate()
-      let firstDate = e.detail.focusDate.start
-      if (
-        formatTimestamp(firstDate) !==
-        formatTimestamp(new Date(dataFirstDate()))
-      ) {
-        return
-      }
+  function updateChartData(e) {
+    signal.update('ChartEvent', false)
+    const msFocusDate = dataFirstDate()
+    let firstDate = e.detail.focusDate.start
+    if (
+      formatTimestamp(firstDate) !== formatTimestamp(new Date(dataFirstDate()))
+    ) {
+      return
+    }
 
-      const timeTerm = msFocusDate - firstDate > -1757413885000
-      if (timeTerm) {
-        compareDateRange(formatRequestDate(new Date(dataFirstDate())))
-      }
-    })
-  })
+    const timeTerm = msFocusDate - firstDate > -1757413885000
+    if (timeTerm) {
+      compareDateRange(formatRequestDate(new Date(dataFirstDate())))
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('ChartEvent', updateChartData)
+
+    return () => {
+      document.removeEventListener('ChartEvent', updateChartData)
+    }
+  }, [])
 
   useEffect(() => {
     if (focusDate !== signal.get('chartCurrentFocusDate')) {

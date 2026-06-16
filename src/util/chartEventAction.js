@@ -7,9 +7,9 @@ const chart = setOptionCandleStickData()
 const xaxis = xaxisStore()
 const signal = outerChartRealSignal()
 
-let xActive = 0
 export const xRangeEvent = (chartRef, setXState) => {
-  chartRef.addEventListener('wheel', e => {
+  let xActive = 0
+  function handWheel(e) {
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
       // 좌우 휠 동작 감지
       e.preventDefault()
@@ -21,7 +21,13 @@ export const xRangeEvent = (chartRef, setXState) => {
       setXState(xaxis.getX())
       if (xaxis.getX() >= -30) signal.update('ChartEvent', true)
     }
-  })
+  }
+
+  chartRef.addEventListener('wheel', handWheel)
+
+  return () => {
+    chartRef.removeEventListener('wheel', handWheel)
+  }
 }
 
 export function outerDataStore() {
